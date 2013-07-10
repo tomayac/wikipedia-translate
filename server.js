@@ -140,8 +140,9 @@ var async = require('async');
               }
             }
             article.translated = arrayUnique(translated);
-            console.log('Translated "' + article.country + ',' + article.region +
-                ',' + article.city + '" to "' + article.translated + '"');
+            console.log('Translated "' + article.country + ',' +
+                article.region + ',' + article.city + '" to "' +
+                article.translated + '"');
             outStream.write(
                 article.language + '\t' +
                 article.country + '\t' +
