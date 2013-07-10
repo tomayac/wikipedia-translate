@@ -38,47 +38,10 @@ var async = require('async');
     return Object.keys(temp);
   };
 
-  var searchCity = function(language, country, region, city, wikipediaSearchUrl,
-      callback) {
+  var searchCity = function(language, country, region, city, url, callback) {
     request.get(
         {
-          uri: wikipediaSearchUrl,
-          headers: {'User-Agent': USER_AGENT}
-        },
-        function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        try {
-          body = JSON.parse(body);
-          if ((body && body.query && body.query.search) &&
-              (Array.isArray(body.query.search))) {
-            var results = [];
-            body.query.search.forEach(function(result) {
-              results.push(result.title);
-            });
-            callback(null, {
-              language: language,
-              country: country,
-              region: region,
-              city: city,
-              results: results
-            });
-          } else {
-            callback(false, null);
-          }
-        } catch(e) {
-          callback(false, null);
-        }
-      } else {
-        callback(false, null);
-      }
-    });
-  };
-
-  var searchCityRegion = function(language, country, region, city,
-      wikipediaSearchUrl, callback) {
-    request.get(
-        {
-          uri: wikipediaSearchUrl,
+          uri: url,
           headers: {'User-Agent': USER_AGENT}
         },
         function(error, response, body) {
@@ -232,13 +195,11 @@ var async = require('async');
               searchCityRegion: function(callback) {
                 var url = wikipediaSearchUrl + '&srsearch=' +
                     encodeURIComponent(city + ' ' + region);
-                searchCityRegion(language, country, region, city, url,
-                    callback);
+                searchCity(language, country, region, city, url, callback);
               }
             },
             function(err, results) {
               if (results.searchCity) {
-                var url =
                 getCategories(results.searchCity);
               } else if (results.searchCityRegion) {
                 getCategories(results.searchCityRegion);
